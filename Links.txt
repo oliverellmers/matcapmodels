@@ -1,0 +1,17 @@
+squarespace three.js urls:
+
+https://blueberry-glockenspiel-42w2.squarespace.com/s/threemin.js
+https://blueberry-glockenspiel-42w2.squarespace.com/s/WebGL.js
+https://blueberry-glockenspiel-42w2.squarespace.com/s/OrbitControls.js
+https://blueberry-glockenspiel-42w2.squarespace.com/s/inflatemin.js
+https://blueberry-glockenspiel-42w2.squarespace.com/s/FBXLoader.js
+https://blueberry-glockenspiel-42w2.squarespace.com/s/ArchitraveAnim.fbx
+https://blueberry-glockenspiel-42w2.squarespace.com/s/nx_final.jpg
+https://blueberry-glockenspiel-42w2.squarespace.com/s/ny_final.jpg
+https://blueberry-glockenspiel-42w2.squarespace.com/s/nz_final.jpg
+https://blueberry-glockenspiel-42w2.squarespace.com/s/px_final.jpg
+https://blueberry-glockenspiel-42w2.squarespace.com/s/py_final.jpg
+https://blueberry-glockenspiel-42w2.squarespace.com/s/pz_final.jpg
+
+
+

@@ -1,0 +1,357 @@
+<!--
+*******************************************************
+ * Copyright (C) 2019 Oliver Ellmers hi@oliverellmers.com
+ * 
+ * This file is part of Practical Fiction.
+ * 
+ * Practical Fiction can not be copied and/or distributed without the express
+ * permission of Oliver Ellmers
+ *******************************************************
+-->
+
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<title>Practical Fiction</title>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+			<link rel="stylesheet" type="text/css" href="style.css">
+			
+		<div id="myCursor" class="cursor"></div>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+		<script type="text/javascript">
+		  var isMobile = false;
+		  function getMobileOperatingSystem() {
+		  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+		      // Windows Phone must come first because its UA also contains "Android"
+		    if (/windows phone/i.test(userAgent)) {
+		      	isMobile = true;
+		        return "Windows Phone";
+		    }
+
+		    if (/android/i.test(userAgent)) {
+		      	isMobile = true;
+		        return "Android";
+		    }
+
+		    // iOS detection from: http://stackoverflow.com/a/9039885/177710
+		    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+		      	isMobile = true;
+		        return "iOS";
+		    }
+			
+		    isMobile = false;
+		    return "unknown";
+			}
+		  
+		var $cursor = $('.cursor');
+
+		function moveCursor(e) {
+		  $cursor.addClass('is-moving');
+		  $cursor.css({"top": e.pageY, "left": e.pageX});
+
+		  clearTimeout(timer2);
+
+		   var timer2 = setTimeout(function() {
+		       $cursor.removeClass('is-moving');
+		   }, 300);
+		}
+		  
+		 
+		$(window).on('mousemove', moveCursor);
+		  
+		$( document ).ready(function() {
+			
+		  getMobileOperatingSystem();
+		  
+		  if(isMobile){
+		    console.log("mobile OS");
+		    $cursor.css("opacity", "0");
+		  }else{
+		    console.log("desktop OS");
+		    $cursor.css("opacity", "1");
+		  }
+		});
+		</script>
+
+		<!--P5JS-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.min.js"></script>
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.sound.min.js"></script>
+
+  		<!--ThreeJS-->
+  		<script src="build/three.min.js"></script>
+		<script src="js/WebGL.js"></script>
+		<script src="js/loaders/FBXLoader.js"></script>
+		<script src="js/libs/inflate.min.js"></script>
+		<script src="js/controls/OrbitControls.js"></script>
+
+
+	</head>
+
+	<body>
+		
+		<!--
+		<div id='p5Div'></div>
+		-->
+		<div id='threejs'></div>
+		<div id='heroImg'>
+			<img src="assets/PracticalFiction_WebPageHeroLogo.png" alt="Practical Fiction">
+		</div>
+
+		<script>
+			// GLOBAL VARS
+
+			var isLoading = true;
+
+			//P5JS VARS
+			var isOverParagraph = false;
+			var paragraph;
+			var pWeight = 10;
+
+			var fontWeightCurrent = 0;
+			var fontWeightTarget = 0;
+
+			var textElement;
+
+			var fontSizeStr = "vw";
+			var fontSizeCurrent = 0;
+			var fontSizeTarget = 0;
+			var easing = 0.45;
+
+			function setup(){
+			  var c = createCanvas(windowWidth, windowHeight, P2D);
+			  c.parent('p5Div');
+			  c.style('display', 'block');
+			  paragraph = createP("wait for it...");
+			  paragraph.class("pClass");
+			 
+			  paragraph.position(0,0);
+
+			  paragraph.mouseOver(overParagraph);
+  			  paragraph.mouseOut(outParagraph);
+  			  
+
+			}
+
+			function overParagraph(){
+			  isOverParagraph = true;
+			}
+
+			function outParagraph(){
+			  isOverParagraph = false;
+			}
+
+			function draw() {
+
+			  var fontWeightDiff = fontWeightTarget - fontWeightCurrent;
+			  fontWeightCurrent += fontWeightDiff * easing;
+
+			  var fontSizeDiff = fontSizeTarget - fontSizeCurrent;
+			  fontSizeCurrent += fontSizeDiff * easing;
+
+			  /*
+			  if(isOverParagraph){
+			    fontWeightTarget = 180;
+			    fontSizeTarget = 11;
+			    fontSizeStr = fontSizeCurrent + "vw";
+			    paragraph.style("font-size", fontSizeStr);
+			    paragraph.style("color:rgba(255,255,255,0);");
+			  }else{
+			    fontWeightTarget = 100;
+			    fontSizeTarget = 11;
+			    fontSizeStr = fontSizeCurrent + "vw";
+			    paragraph.style("font-size", fontSizeStr);
+			    paragraph.style("color:rgba(255,255,255,0);");
+			  }
+			  */
+
+			  if(!isLoading){
+			  	fontWeightTarget = 100;
+			    fontSizeTarget = 0;
+			    paragraph.style("font-size", 8);
+			    fontSizeStr = "color:rgba(0,0,0," + fontSizeCurrent + ");";
+			    paragraph.style(fontSizeStr);
+			}else{
+				fontWeightTarget = 100;
+			    fontSizeTarget = 8;
+			    fontSizeStr = fontSizeCurrent + "vw";
+			    paragraph.style("font-size", fontSizeStr);
+			    paragraph.style("color:rgba(0,0,0,255);");
+			}
+
+			  paragraph.elt.style['font-variation-settings'] = `"wght" ${fontWeightCurrent}, "wdth" ${115}`;
+			  paragraph.center();
+			  blendMode(EXCLUSION );
+			}
+
+			//THREEJS
+
+			if ( WEBGL.isWebGLAvailable() === false ) {
+				document.body.appendChild( WEBGL.getWebGLErrorMessage() );
+			}
+			var container,controls;
+			var threeCamera, scene, renderer, light;
+			var clock = new THREE.Clock();
+			var mixer;
+			
+			init();
+			animate();
+
+
+			function init() {
+				isLoading = true;
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// CAMERA
+				threeCamera = new THREE.PerspectiveCamera( 140, window.innerWidth / window.innerHeight, 1, 2000 );
+				threeCamera.position.set( 0, 0, 0 );
+				controls = new THREE.OrbitControls( threeCamera );
+				controls.target.set( 30, 100, 100);
+				controls.autoRotate = true;
+				controls.update();
+
+				// SCENE 
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xffffff  );
+				//scene.background = new THREE.Color( 0x3CE825  );
+				scene.fog = new THREE.Fog( 0xa0a0a0, 200, 1000 );
+
+				// LIGHTS
+				light = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+				light.position.set( 0, 200, 0 );
+				scene.add( light );
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 0, 200, 100 );
+				light.castShadow = true;
+				light.shadow.camera.top = 180;
+				light.shadow.camera.bottom = - 100;
+				light.shadow.camera.left = - 120;
+				light.shadow.camera.right = 120;
+				scene.add( light );
+
+
+				// RENDERER
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.shadowMap.enabled = true;
+
+				//LOADING PROGRESS
+				var onProgress = function(xhr){
+					if(xhr.lengthComputable){
+						var percentageComplete = xhr.loaded / xhr.total * 100;
+						console.log(Math.round(percentageComplete, 2) + '% downloaded');
+						if(percentageComplete == 100){
+							console.log('loading complete');
+							isLoading = false;
+						}
+					}
+				};
+
+
+				//CUBE LOADER
+				var r = "textures/cube/optimised/";
+				var urls = [
+					r + "px_final.jpg", r + "nx_final.jpg",
+					r + "py_final.jpg", r + "ny_final.jpg",
+					r + "pz_final.jpg", r + "nz_final.jpg"
+				];
+
+				var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+				reflectionCube.format = THREE.RGBFormat;
+
+				//scene.background = reflectionCube;
+
+				//MATERIAL
+				var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 1.5 } );
+
+				var blackMatrial = new THREE.MeshPhongMaterial( { 
+					color: 0x1C1C1C,
+				    envMap: reflectionCube, // optional environment map
+				    specular: 0x7F7F7F,
+				    shininess: 1
+				} );
+
+
+				// FBX LOADING
+				var loader = new THREE.FBXLoader();
+				loader.load( 'models/fbx/ArchitraveAnim.fbx', function ( object ) {
+
+					mixer = new THREE.AnimationMixer( object );
+
+					var action = mixer.clipAction( object.animations[ 0 ] );
+					action.play();
+
+
+					object.traverse( function ( child ) {
+						if ( child.isMesh ) {
+
+							child.castShadow = true;
+							child.receiveShadow = true;
+
+							var material = child.material;
+
+							if(Array.isArray(material)){
+								if(material[0].isMeshPhongMaterial){
+
+              						child.material[0] = cubeMaterial;
+								}
+							}else if(material.isMeshPhongMaterial){
+
+
+            					if(child.material.name == "ColA"){
+            						child.material = cubeMaterial;
+            					}else{
+            						child.material = blackMatrial;
+            					}
+            					
+							}
+						}
+					} );
+
+					scene.add( object );
+				}, onProgress);
+				
+
+				container.appendChild( renderer.domElement );
+				window.addEventListener( 'resize', onWindowResize, false );
+				document.addEventListener('mouseenter', onDocumentMouseEnter, false);
+				document.addEventListener('mouseleave', onDocumentMouseLeave, false);
+			}
+
+			
+			function onWindowResize() {
+				threeCamera.aspect = window.innerWidth / window.innerHeight;
+				threeCamera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function onDocumentMouseEnter(event){
+				var cursorElem = document.getElementById('myCursor');
+				cursorElem.style.visibility = 'visible';
+
+			}
+
+			function onDocumentMouseLeave(event){
+				var cursorElem = document.getElementById('myCursor');
+				cursorElem.style.visibility = 'hidden';
+
+			}
+			//
+			function animate() {
+				requestAnimationFrame( animate );
+				var delta = clock.getDelta();
+				if ( mixer ) mixer.update( delta );
+				controls.update();
+				renderer.render( scene, threeCamera );
+			}
+		</script>
+		
+	</body>
+	</html>
