@@ -97,7 +97,7 @@
 				// matcap
 				var loader = new THREE.TextureLoader( manager );
 
-				var matcap = loader.load( 'textures/matcaps/matcap_053.jpg', function () {
+				var matcap = loader.load( 'textures/matcaps/droplet_01.png', function () {
 
 					matcap.encoding = THREE.sRGBEncoding;
 
@@ -179,6 +179,8 @@
 				image.style.margin = '0 0 10px 0';
 				image.src = 'textures/matcaps/matcap_053.jpg';
 				div.appendChild( image );
+
+				div.style.display = 'none';
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
