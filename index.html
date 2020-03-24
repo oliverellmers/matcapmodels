@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - materials - matcap</title>
+		<title>waveyface</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
@@ -98,13 +98,15 @@
 				var loader = new THREE.TextureLoader( manager );
 
 				var matcap = loader.load( 'textures/matcaps/droplet_01.png', function () {
+				//var matcap = loader.load( 'textures/matcaps/matcap_011.png', function () {
 
 					matcap.encoding = THREE.sRGBEncoding;
 
 				} );
 
 				// model
-				new THREE.GLTFLoader( manager ).load( 'models/gltf/LeePerrySmith/LeePerrySmith.glb', function ( gltf ) {
+				//new THREE.GLTFLoader( manager ).load( 'models/gltf/LeePerrySmith/LeePerrySmith.glb', function ( gltf ) {
+				new THREE.GLTFLoader( manager ).load( 'models/gltf/obj_free_male_head_reduced.glb', function ( gltf ) {
 
 					mesh = gltf.scene.children[ 0 ];
 
@@ -135,6 +137,7 @@
 
 
 					mesh.material = m_material
+					mesh.scale.set(2,2,2);
 
 					scene.add( mesh );
 
